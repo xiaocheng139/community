@@ -1,6 +1,7 @@
 package com.xcfei.community.controller;
 
 import com.xcfei.community.entity.DiscussPost;
+import com.xcfei.community.entity.Page;
 import com.xcfei.community.entity.User;
 import com.xcfei.community.service.DiscussPostService;
 import com.xcfei.community.service.UserService;
@@ -24,14 +25,17 @@ public class HomeController {
     private UserService userService;
 
     @RequestMapping(path = "/index", method = RequestMethod.GET)
-    public String getIndexPage(Model model) {
-        List<DiscussPost> list = discussPostService.findDiscussPosts(0, 0, 10);
+    public String getIndexPage(Model model, User user, Page page) {
+        page.setTotalRows(discussPostService.findDiscussPostRows(0));
+        page.setPath("/index");
+
+        List<DiscussPost> list = discussPostService.findDiscussPosts(0, page.getOffset(), page.getLimit());
         List<Map<String, Object>> discussPosts = new ArrayList<>();
         if (list != null) {
             for (DiscussPost post: list) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("post", post);
-                User user = userService.findUserById(post.getUserId());
+                user = userService.findUserById(post.getUserId());
                 map.put("user", user);
                 discussPosts.add(map);
             }
