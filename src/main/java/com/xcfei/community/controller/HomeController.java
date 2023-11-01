@@ -25,7 +25,7 @@ public class HomeController {
     private UserService userService;
 
     @RequestMapping(path = "/index", method = RequestMethod.GET)
-    public String getIndexPage(Model model, User user, Page page) {
+    public String getIndexPage(Model model, Page page) {
         page.setTotalRows(discussPostService.findDiscussPostRows(0));
         page.setPath("/index");
 
@@ -35,7 +35,7 @@ public class HomeController {
             for (DiscussPost post: list) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("post", post);
-                user = userService.findUserById(post.getUserId());
+                User user = userService.findUserById(post.getUserId());
                 map.put("user", user);
                 discussPosts.add(map);
             }
